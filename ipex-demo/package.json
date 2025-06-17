@@ -11,6 +11,7 @@
   "devDependencies": {
     "@babylonjs/core": "^8.11.0",
     "@babylonjs/loaders": "^8.11.0",
+    "@babylonjs/materials": "^8.12.1",
     "typescript": "~5.8.3",
     "vite": "^6.3.5"
   }

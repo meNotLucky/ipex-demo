@@ -1,4 +1,5 @@
 import * as BABYLON from '@babylonjs/core';
+import { getGridMesh } from './viewport';
 
 /** Holds references to the selected meshes for each scene */
 let selectedMeshes = new Map<BABYLON.Scene, BABYLON.Nullable<BABYLON.Mesh>>();
@@ -89,6 +90,7 @@ function addNewSceneLayer(scene: BABYLON.Scene)
 
     let sceneHighlightLayer = new BABYLON.HighlightLayer("selectionHighlight", scene);
     sceneHighlightLayer.innerGlow = false;
+    sceneHighlightLayer.addExcludedMesh(getGridMesh());
 
     scene.registerBeforeRender(() => {
         selectionAnimPulseAlpha += 0.02;
