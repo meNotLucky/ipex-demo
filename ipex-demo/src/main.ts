@@ -1,6 +1,6 @@
 import * as BABYLON from '@babylonjs/core';
 import '@babylonjs/loaders';
-import * as VIEWPORT from './viewport'
+import * as VIEWPORT from './viewport';
 import * as SELECTION from './selection';
 
 const canvas = (document.getElementById("render-canvas") as HTMLCanvasElement);
@@ -9,22 +9,13 @@ const engine = new BABYLON.Engine(canvas, true, { stencil: true });
 VIEWPORT.createViewport(engine);
 const scene = VIEWPORT.getScene();
 
-const importResult = BABYLON.ImportMeshAsync("models/combi.glb", scene);
 const sphere = BABYLON.MeshBuilder.CreateSphere("sphere");
+sphere.setPositionWithLocalVector(new BABYLON.Vector3(2,0,0));
+sphere.refreshBoundingInfo({});
 
-scene.onPointerObservable.add((pointerInfo) => {
-switch (pointerInfo.type) {
-    case BABYLON.PointerEventTypes.POINTERPICK: {
-        if (pointerInfo.pickInfo == null)
-            break;
-
-        let mesh = pointerInfo.pickInfo.pickedMesh;
-        if (pointerInfo.pickInfo.hit && mesh != null)
-            SELECTION.setSelectedMesh((mesh as BABYLON.Mesh));
-    }
-    break;
-    }
-});
+const importResult = await BABYLON.ImportMeshAsync("models/combi.glb", scene);
+let combiMesh = importResult.meshes[1];
+SELECTION.setSelectedMesh((combiMesh as BABYLON.Mesh));
 
 engine.runRenderLoop(function() {
     scene.render();

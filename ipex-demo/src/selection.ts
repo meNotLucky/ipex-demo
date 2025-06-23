@@ -1,5 +1,6 @@
 import * as BABYLON from '@babylonjs/core';
 import { getGridMesh } from './viewport';
+import { retargetCamera } from './viewport';
 
 /** Holds references to the selected meshes for each scene */
 let selectedMeshes = new Map<BABYLON.Scene, BABYLON.Nullable<BABYLON.Mesh>>();
@@ -7,7 +8,7 @@ let selectedMeshes = new Map<BABYLON.Scene, BABYLON.Nullable<BABYLON.Mesh>>();
 let highlightLayers = new Map<BABYLON.Scene, BABYLON.Nullable<BABYLON.HighlightLayer>>();
 
 /** Global alpha for selection outline pulse animation */
-let selectionAnimPulseAlpha = 0;
+let selectionAnimPulseAlpha : number = 0;
 
 /**
  * Selects a new mesh for the scene and highlights it, can be queried with getSelectedMesh()
@@ -28,7 +29,10 @@ export function setSelectedMesh(mesh: BABYLON.Nullable<BABYLON.Mesh>)
 
     selectedMeshes.set(scene, mesh);
     
+    selectionAnimPulseAlpha = 0;
     highlightLayers.get(scene)?.addMesh((mesh as BABYLON.Mesh), BABYLON.Color3.Yellow());
+
+    retargetCamera(scene, mesh.position);
 }
 
 /**
@@ -97,6 +101,9 @@ function addNewSceneLayer(scene: BABYLON.Scene)
         const blurSize = 0.3; const blurAnimOffset = 0.2;
         sceneHighlightLayer.blurHorizontalSize = blurSize + (Math.cos(selectionAnimPulseAlpha) * blurAnimOffset) + blurAnimOffset;
         sceneHighlightLayer.blurVerticalSize = blurSize + (Math.cos(selectionAnimPulseAlpha) * blurAnimOffset) + blurAnimOffset;
+        
+        if (selectionAnimPulseAlpha >= Number.MAX_VALUE)
+            selectionAnimPulseAlpha = 0;
     });
 
     highlightLayers.set(scene, sceneHighlightLayer);
