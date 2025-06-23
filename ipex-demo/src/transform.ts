@@ -45,3 +45,51 @@ export function moveMesh(mesh : BABYLON.Mesh, distance : BABYLON.Vector3)
     mesh.computeWorldMatrix(true);
     mesh.refreshBoundingInfo({});
 }
+
+/**
+ * Animates a mesh to "inflate" like a balloon, for funsies.
+ * @param mesh The mesh to inflate.
+ * @param scaleFactor The total size multiplier.
+ * @param duration Duration of the animation in milliseconds.
+ */
+export function inflateMesh(mesh: BABYLON.AbstractMesh) {
+    const inflationAnim = new BABYLON.Animation(
+        "inflate",
+        "scaling",
+        24,
+        BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+        BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+    );
+
+    inflationAnim.setKeys([
+        { frame: 0, value: mesh.scaling.clone() },
+        { frame: 24, value: mesh.scaling.multiplyByFloats(1.5, 1.5, 1.5) },
+    ]);
+
+    const flyAnim = new BABYLON.Animation(
+        "fly",
+        "position",
+        24,
+        BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+        BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+    );
+
+    flyAnim.setKeys([
+        { frame: 0, value: mesh.position.clone() },
+        { frame: 512, value: mesh.position.copyFromFloats(1, 100, 1) },
+    ]);
+
+    const inflationFunc = new BABYLON.QuadraticEase();
+    inflationFunc.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+    inflationAnim.setEasingFunction(inflationFunc);
+
+    const flyFunc = new BABYLON.QuadraticEase();
+    flyFunc.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEIN);
+    flyAnim.setEasingFunction(flyFunc);
+
+    mesh.animations = [];
+    mesh.animations.push(inflationAnim);
+    mesh.animations.push(flyAnim);
+
+    mesh.getScene().beginAnimation(mesh, 0, 512, false);
+}
