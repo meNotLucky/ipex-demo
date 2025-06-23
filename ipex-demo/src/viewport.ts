@@ -14,10 +14,13 @@ let gridMesh : BABYLON.Mesh;
  * @returns Scene created for viewport.
  */
 export function createViewport(engine : BABYLON.Engine) : BABYLON.Scene {
+
+    // Create the scene object
     scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0.2, 0.2, 0.2, 1);
     scene.createDefaultLight();
 
+    // Create and add an arc camera to the scene
     const camera = new BABYLON.ArcRotateCamera(
         "arcCam", 
         Math.PI / 3, // alpha: 90 degrees
@@ -30,9 +33,21 @@ export function createViewport(engine : BABYLON.Engine) : BABYLON.Scene {
     camera.wheelPrecision = 12;
     camera.attachControl(engine.getRenderingCanvas(), true);
 
+    // Add a grid plane mesh to the scene to act as a transform reference
     gridMesh = BABYLON.MeshBuilder.CreateTiledGround("gridMesh", {xmin: -10, zmin: -10, xmax: 10, zmax: 10, updatable: false}, scene);
     gridMesh.isPickable = false;
 
+    var groundMaterial = new GridMaterial("groundMaterial", scene);
+    groundMaterial.majorUnitFrequency = 5;
+    groundMaterial.minorUnitVisibility = 0.45;
+    groundMaterial.gridRatio = 0.5;
+    groundMaterial.backFaceCulling = false;
+    groundMaterial.mainColor = new BABYLON.Color3(1, 1, 1);
+    groundMaterial.lineColor = new BABYLON.Color3(1.0, 1.0, 1.0);
+    groundMaterial.opacity = 0.2;
+    gridMesh.material = groundMaterial;
+
+    // Create GUI elements
     var advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
     GUI_HELPERS.createVector3Field("extent", "Apply Model Scaling", new BABYLON.Vector3(1.25, 1.25, 1.25), new BABYLON.Vector2(60, 60), (value : BABYLON.Vector3) => {
         const selectedMesh = SELECTION.getSelectedMesh(scene);
@@ -52,16 +67,7 @@ export function createViewport(engine : BABYLON.Engine) : BABYLON.Scene {
             TRANSFORM.inflateMesh(selectedMesh);
     }, advancedTexture);
 
-    var groundMaterial = new GridMaterial("groundMaterial", scene);
-    groundMaterial.majorUnitFrequency = 5;
-    groundMaterial.minorUnitVisibility = 0.45;
-    groundMaterial.gridRatio = 0.5;
-    groundMaterial.backFaceCulling = false;
-    groundMaterial.mainColor = new BABYLON.Color3(1, 1, 1);
-    groundMaterial.lineColor = new BABYLON.Color3(1.0, 1.0, 1.0);
-    groundMaterial.opacity = 0.2;
-    gridMesh.material = groundMaterial;
-
+    // Add callback for clicking on meshes in the scene
     scene.onPointerObservable.add((pointerInfo) => {
     switch (pointerInfo.type) {
         case BABYLON.PointerEventTypes.POINTERPICK: {

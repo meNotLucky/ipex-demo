@@ -16,7 +16,7 @@ class ModelToLoad {
  * @param models The models to load.
  * @param scene The scene to add the models to.
  */
-export async function asyncLoadFiles(models : ModelToLoad[], scene : BABYLON.Scene) : Promise<void>
+export async function asyncLoadModels(models : ModelToLoad[], scene : BABYLON.Scene) : Promise<void>
 {
     const assetContainers = await Promise.all(models.map(async (model) => BABYLON.LoadAssetContainerAsync(model.path, scene)));
 
