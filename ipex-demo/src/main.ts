@@ -10,7 +10,7 @@ const scene = VIEWPORT.createViewport(engine);
 MODELS.asyncLoadFiles([
     { path: 'models/combi.glb', position: new BABYLON.Vector3(0, 0.36, 0) },
     { path: 'models/lamp.glb', position: new BABYLON.Vector3(2, 0, 0), scaling: new BABYLON.Vector3(0.25, 0.25, 0.25)},
-    { path: 'models/carno.glb', position: new BABYLON.Vector3(-2, 0, 0), scaling: new BABYLON.Vector3(0.25, 0.25, -0.25)}
+    { path: 'models/carno.glb', position: new BABYLON.Vector3(-2, 0, 0), scaling: new BABYLON.Vector3(0.25, 0.25, 0.25)}
 ], scene);
 
 engine.runRenderLoop(function() {

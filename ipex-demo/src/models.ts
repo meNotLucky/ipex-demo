@@ -33,6 +33,9 @@ export async function asyncLoadFiles(models : ModelToLoad[], scene : BABYLON.Sce
 
         if (models[i].scaling != undefined)
             container.meshes[0].scaling = models[i].scaling!;
+        
+        container.meshes[0].computeWorldMatrix(true);
+        container.meshes[0].refreshBoundingInfo({});
 
         sceneAssetContainers.get(scene)?.push(container);
     };

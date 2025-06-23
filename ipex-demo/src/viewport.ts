@@ -40,6 +40,12 @@ export function createViewport(engine : BABYLON.Engine) : BABYLON.Scene {
             TRANSFORM.extendMesh(selectedMesh, value);
     }, advancedTexture);
 
+        GUI_HELPERS.createVector3Field("translation", "Apply Model Move", BABYLON.Vector3.Zero(), new BABYLON.Vector2(60, 120), (value : BABYLON.Vector3) => {
+        const selectedMesh = SELECTION.getSelectedMesh(scene);
+        if (selectedMesh)
+            TRANSFORM.moveMesh(selectedMesh, value);
+    }, advancedTexture);
+
     var groundMaterial = new GridMaterial("groundMaterial", scene);
     groundMaterial.majorUnitFrequency = 5;
     groundMaterial.minorUnitVisibility = 0.45;
