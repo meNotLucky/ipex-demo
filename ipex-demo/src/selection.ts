@@ -1,6 +1,8 @@
 import * as BABYLON from '@babylonjs/core';
 import { getGridMesh } from './viewport';
 import { retargetCamera } from './viewport';
+import { getMeshRoot } from './models';
+import { getAllMeshesFromModel } from './models';
 
 /** Holds references to the selected meshes for each scene */
 let selectedMeshes = new Map<BABYLON.Scene, BABYLON.Nullable<BABYLON.Mesh>>();
@@ -30,9 +32,9 @@ export function setSelectedMesh(mesh: BABYLON.Nullable<BABYLON.Mesh>)
     selectedMeshes.set(scene, mesh);
     
     selectionAnimPulseAlpha = 0;
-    highlightLayers.get(scene)?.addMesh((mesh as BABYLON.Mesh), BABYLON.Color3.Yellow());
+    setMeshHighlighted(mesh, true);
 
-    retargetCamera(scene, mesh.position);
+    retargetCamera(scene, getMeshRoot(mesh).position);
 }
 
 /**
@@ -46,8 +48,7 @@ export function clearSelectedMesh(scene: BABYLON.Scene)
     if (!hasSelectedMesh(scene))
         return;
 
-    highlightLayers.get(scene)?.removeMesh((getSelectedMesh(scene) as BABYLON.Mesh));
-
+    setMeshHighlighted((getSelectedMesh(scene) as BABYLON.Mesh), false);
     selectedMeshes.set(scene, null);
 }
 
@@ -107,4 +108,24 @@ function addNewSceneLayer(scene: BABYLON.Scene)
     });
 
     highlightLayers.set(scene, sceneHighlightLayer);
+}
+
+function setMeshHighlighted(mesh : BABYLON.Mesh, highlight : boolean)
+{
+    const allChildMeshes = getAllMeshesFromModel(mesh);
+    const scene = mesh.getScene();
+
+    highlightLayers.get(scene)?.addMesh((mesh as BABYLON.Mesh), BABYLON.Color3.Yellow());
+
+    if (highlight) {
+        allChildMeshes.forEach(function (childMesh) {
+            if (childMesh != mesh)
+                highlightLayers.get(scene)?.addMesh((childMesh as BABYLON.Mesh), BABYLON.Color3.Teal());
+        });
+    }
+    else {
+        allChildMeshes.forEach(function (childMesh) {
+            highlightLayers.get(scene)?.removeMesh((childMesh as BABYLON.Mesh));
+        });
+    }
 }

@@ -11,8 +11,9 @@ let gridMesh : BABYLON.Mesh;
 /**
  * Creates a scene, camera and grid
  * @param engine The engine to use for rendering the scene.
+ * @returns Scene created for viewport.
  */
-export function createViewport(engine : BABYLON.Engine) {    
+export function createViewport(engine : BABYLON.Engine) : BABYLON.Scene {
     scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0.2, 0.2, 0.2, 1);
     scene.createDefaultLight();
@@ -62,6 +63,8 @@ export function createViewport(engine : BABYLON.Engine) {
         break;
         }
     });
+
+    return scene;
 }
 
 export function getScene() : BABYLON.Scene
