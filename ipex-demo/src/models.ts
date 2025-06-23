@@ -1,14 +1,21 @@
 import * as BABYLON from '@babylonjs/core';
 import '@babylonjs/loaders';
 
+/** Holds all assets containers for all scenes */
 let sceneAssetContainers = new  Map<BABYLON.Scene, BABYLON.AssetContainer[]>();
 
+/** Simple class to define import options for the model to load. */
 class ModelToLoad {
     path : string = "";
     position? : BABYLON.Vector3 = BABYLON.Vector3.Zero();
     scaling? : BABYLON.Vector3 = BABYLON.Vector3.One();
 }
 
+/**
+ * Async loads all models and adds them to the scene when finished.
+ * @param models The models to load.
+ * @param scene The scene to add the models to.
+ */
 export async function asyncLoadFiles(models : ModelToLoad[], scene : BABYLON.Scene) : Promise<void>
 {
     const assetContainers = await Promise.all(models.map(async (model) => BABYLON.LoadAssetContainerAsync(model.path, scene)));
@@ -33,6 +40,11 @@ export async function asyncLoadFiles(models : ModelToLoad[], scene : BABYLON.Sce
     return Promise.resolve();
 }
 
+/**
+ * Gets the root node of any given mesh.
+ * @param mesh Mesh to find root for.
+ * @returns The root node.
+ */
 export function getMeshRoot(mesh : BABYLON.AbstractMesh) : BABYLON.AbstractMesh
 {
     let current = mesh;
@@ -43,6 +55,11 @@ export function getMeshRoot(mesh : BABYLON.AbstractMesh) : BABYLON.AbstractMesh
     return current;
 }
 
+/**
+ * Gets all meshes contained in the model the given mesh belongs to.
+ * @param mesh Source mesh.
+ * @returns All meshes in the model.
+ */
 export function getAllMeshesFromModel(mesh : BABYLON.AbstractMesh) : BABYLON.AbstractMesh[]
 {
     var root = getMeshRoot(mesh);

@@ -67,11 +67,19 @@ export function createViewport(engine : BABYLON.Engine) : BABYLON.Scene {
     return scene;
 }
 
+/**
+ * Gets the scene created by the viewport.
+ * @returns The scene object.
+ */
 export function getScene() : BABYLON.Scene
 {
     return scene;
 }
 
+/**
+ * Gets the grid mesh created by the viewport.
+ * @returns The grid mesh.
+ */
 export function getGridMesh() : BABYLON.Mesh
 {
     return gridMesh;
@@ -81,6 +89,11 @@ const animFPS = 24
 const frameCount = 1 * animFPS
 const animSpeed = 2.0;
 
+/**
+ * Moves the camera to a new target with a smooth transition.
+ * @param scene The scene to move the camera in.
+ * @param newTarget The new target for the camera. 
+ */
 export function retargetCamera(scene : BABYLON.Scene, newTarget : BABYLON.Vector3)
 {
     const camera : BABYLON.ArcRotateCamera = (scene.activeCamera as BABYLON.ArcRotateCamera);

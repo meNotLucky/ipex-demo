@@ -110,6 +110,11 @@ function addNewSceneLayer(scene: BABYLON.Scene)
     highlightLayers.set(scene, sceneHighlightLayer);
 }
 
+/**
+ * Togggles yellow highlighting for the given mesh, and teal highlighting for any potential other mesh in the belonging model.
+ * @param mesh The mesh to highlight.
+ * @param highlight If the mesh should be highlighted or not.
+ */
 function setMeshHighlighted(mesh : BABYLON.Mesh, highlight : boolean)
 {
     const allChildMeshes = getAllMeshesFromModel(mesh);
